@@ -26,14 +26,11 @@ def inicial():
     if nome_usuario:
         nome_usuario = nome_usuario[0]['usuario']
 
-    ## termos = db.execute("SELECT termo FROM usuarios WHERE usuario = ?", nome_usuario)
-    ## descricao_de_termos = db.execute("SELECT descricao_de_Termo FROM usuarios WHERE usuario = ?", nome_usuario)
-    termos_e_descricoes = db.execute("SELECT termo, descricao_de_termo FROM usuarios WHERE usuario = ? AND termo IS NOT NULL AND descricao_de_termo IS NOT NULL ORDER BY termo ASC", nome_usuario)
-    termos_e_descricoes_ordenados = sorted(termos_e_descricoes, key=lambda x: x['termo'])
-
 
 
     if request.method == "GET":
+        termos_e_descricoes = db.execute("SELECT termo, descricao_de_termo FROM usuarios WHERE usuario = ? AND termo IS NOT NULL AND descricao_de_termo IS NOT NULL ORDER BY termo ASC", nome_usuario)
+        termos_e_descricoes_ordenados = sorted(termos_e_descricoes, key=lambda x: x['termo'])
         return render_template("inicial.html", termos_e_descricoes_ordenados=termos_e_descricoes_ordenados)
 
     else:
@@ -45,9 +42,9 @@ def inicial():
     ## termos = db.execute("SELECT termo FROM usuarios WHERE usuario = ?", nome_usuario)
     ## descricao_de_termos = db.execute("SELECT descricao_de_Termo FROM usuarios WHERE usuario = ?", nome_usuario)
 
-    termos_e_descricoes = db.execute("SELECT termo, descricao_de_termo FROM usuarios WHERE usuario = ? AND termo IS NOT NULL AND descricao_de_termo IS NOT NULL ORDER BY termo ASC", nome_usuario)
-    termos_e_descricoes_ordenados = sorted(termos_e_descricoes, key=lambda x: x['termo'])
-    return render_template("inicial.html", termos_e_descricoes_ordenados=termos_e_descricoes_ordenados)
+        termos_e_descricoes = db.execute("SELECT termo, descricao_de_termo FROM usuarios WHERE usuario = ? AND termo IS NOT NULL AND descricao_de_termo IS NOT NULL ORDER BY termo ASC", nome_usuario)
+        termos_e_descricoes_ordenados = sorted(termos_e_descricoes, key=lambda x: x['termo'])
+        return render_template("inicial.html", termos_e_descricoes_ordenados=termos_e_descricoes_ordenados)
 
 @app.route("/registrar", methods=["GET", "POST"])
 def registrar():
@@ -89,7 +86,10 @@ def login():
         if senha_verdadeira == senha:
             session["user_id"] = id
 
-            return render_template("inicial.html", success="Login efetuado com sucesso.")
+            termos_e_descricoes = db.execute("SELECT termo, descricao_de_termo FROM usuarios WHERE usuario = ? AND termo IS NOT NULL AND descricao_de_termo IS NOT NULL ORDER BY termo ASC", usuario)
+            termos_e_descricoes_ordenados = sorted(termos_e_descricoes, key=lambda x: x['termo'])
+            return render_template("inicial.html", termos_e_descricoes_ordenados=termos_e_descricoes_ordenados)
+
         return render_template("login.html", error="Usuário ou senha incorretos.")
 
 
