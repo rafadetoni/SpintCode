@@ -63,31 +63,41 @@
 </div>
 
 <div class="dicionario">
-    {% for termo_descricao in termos_e_descricoes_ordenados %}
-        <div class="term">
-            <h2>{{ termo_descricao['termo'] }}</h2>
-            <p>{{ termo_descricao['descricao_de_termo'] }}</p>
-        </div>
-    {% endfor %}
+    {% if termos_e_descricoes_ordenados %}
+        {% for termo_descricao in termos_e_descricoes_ordenados %}
+            <div class="term">
+                <h2>{{ termo_descricao['termo'] }}</h2>
+                <p>{{ termo_descricao['descricao_de_termo'] }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Nenhum termo encontrado.</p>
+    {% endif %}
 </div>
 
 <script>
     function scrollToLetter(letra) {
         var termos = document.querySelectorAll('.term');
+        var encontrado = false;
 
         for (var i = 0; i < termos.length; i++) {
             var termo = termos[i];
             var primeiraLetra = termo.querySelector('h2').textContent.charAt(0);
 
-            if (primeiraLetra.toUpperCase() >= letra.toUpperCase()) {
+            if (primeiraLetra.toUpperCase() === letra.toUpperCase()) {
                 termo.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                return;
+                encontrado = true;
+                break;
             }
         }
 
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (!encontrado) {
+            termos[termos.length - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }
 </script>
+
+
 
 <script>
     function pesquisarTermo() {
