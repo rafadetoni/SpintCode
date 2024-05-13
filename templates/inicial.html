@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Inicial
+{% endblock %}
+
+{% block styles %}
+<style>
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+    .form-control {
+        border-radius: 5px;
+        border-color: #ced4da;
+    }
+
+    .mb-3 {
+        margin-bottom: 15px;
+    }
+
+    .alphabet-buttons {
+        margin-bottom: 20px;
+    }
+
+    .dicionario {
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="row">
+    <div class="col-md-6">
+        <form id="search-form">
+            <div class="mb-3">
+                <input autocomplete="off" autofocus class="form-control" name="pesquisa_termo" id="pesquisa_termo" placeholder="Pesquisar termo" type="text">
+                <button class="btn btn-primary">Pesquisar</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <form action="/" method="post">
+            <div class="mb-3">
+                <input autocomplete="off" autofocus class="form-control" name="novo_termo" placeholder="Adicionar novo termo" type="text">
+                <input autocomplete="off" autofocus class="form-control" name="nova_descricao" placeholder="Descrição" type="text">
+                <button class="btn btn-primary">Enviar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="alphabet-buttons">
+    {% for letra in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' %}
+        <button class="btn btn-outline-primary letter-button" onclick="scrollToLetter('{{ letra }}')">{{ letra }}</button>
+    {% endfor %}
+</div>
+
+<div class="dicionario">
+    {% for termo_descricao in termos_e_descricoes_ordenados %}
+        <div class="term">
+            <h2>{{ termo_descricao['termo'] }}</h2>
+            <p>{{ termo_descricao['descricao_de_termo'] }}</p>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    function scrollToLetter(letra) {
+        var termos = document.querySelectorAll('.term');
+
+        for (var i = 0; i < termos.length; i++) {
+            var termo = termos[i];
+            var primeiraLetra = termo.querySelector('h2').textContent.charAt(0);
+
+            if (primeiraLetra.toUpperCase() >= letra.toUpperCase()) {
+                termo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
+            }
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+<script>
+    function pesquisarTermo() {
+        var termoPesquisado = document.getElementById('pesquisa_termo').value.toLowerCase();
+        var termos = document.querySelectorAll('.term');
+
+        for (var i = 0; i < termos.length; i++) {
+            var termo = termos[i];
+            var termoTexto = termo.querySelector('h2').textContent.toLowerCase();
+
+            if (termoTexto.includes(termoPesquisado)) {
+                termo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
+            }
+        }
+
+        alert("Termo não encontrado.");
+    }
+
+    document.getElementById('search-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        pesquisarTermo();
+        return false;
+    });
+</script>
+
+{% endblock %}
